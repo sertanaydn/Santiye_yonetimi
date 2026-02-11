@@ -51,6 +51,8 @@ export default function NewIronInvoicePage() {
     }, []);
     const [supplier, setSupplier] = useState('ÖZTOP');
     const [notes, setNotes] = useState('');
+    const [workType, setWorkType] = useState('Malzeme Faturası');
+    const [category, setCategory] = useState('İnşaat Demiri');
 
     // Items State
     const [invoiceType, setInvoiceType] = useState('withholding'); // withholding (tev), standard (no tev)
@@ -383,7 +385,10 @@ export default function NewIronInvoicePage() {
                     tevkifat_amount: totals.withholding,
                     grand_total: totals.grandTotal,
                     camsan_share: totals.camsanShare,
-                    koparan_share: totals.koparanShare
+                    koparan_share: totals.koparanShare,
+                    account_processed: false,
+                    work_type: workType,
+                    category: category
                 }])
                 .select()
                 .single();
@@ -492,316 +497,352 @@ export default function NewIronInvoicePage() {
                                 </Select>
                             </div>
                         </div>
+
+                        {/* New Row: Work Type and Category */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                             <div className="space-y-2">
-                                <Label>Fatura No</Label>
-                                <Input placeholder="Fatura numarası..." value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} />
+                                <Label htmlFor="workType">Fatura Türü (Cari)</Label>
+                                <Select value={workType} onValueChange={setWorkType}>
+                                    <SelectTrigger className="bg-neutral-50 border-neutral-200">
+                                        <SelectValue placeholder="Seçiniz" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Malzeme Faturası">Malzeme Faturası</SelectItem>
+                                        <SelectItem value="İş Mak. Çalış. Faturası">İş Mak. Çalış. Faturası</SelectItem>
+                                        <SelectItem value="Hizmet Faturası">Hizmet Faturası</SelectItem>
+                                        <SelectItem value="Nakliye Faturası">Nakliye Faturası</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
+
                             <div className="space-y-2">
-                                <Label>Fatura Tarihi</Label>
-                                <Input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} />
+                                <Label htmlFor="category">Kategori</Label>
+                                <Select value={category} onValueChange={setCategory}>
+                                    <SelectTrigger className="bg-neutral-50 border-neutral-200">
+                                        <SelectValue placeholder="Seçiniz" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="İnşaat Demiri">İnşaat Demiri</SelectItem>
+                                        <SelectItem value="Hazır Beton">Hazır Beton</SelectItem>
+                                        <SelectItem value="İş Makinesi">İş Makinesi</SelectItem>
+                                        <SelectItem value="Nakliye">Nakliye</SelectItem>
+                                        <SelectItem value="Genel Gider">Genel Gider</SelectItem>
+                                        <SelectItem value="Diğer">Diğer</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Fatura Notu</Label>
-                            <Input placeholder="Opsiyonel açıklama..." value={notes} onChange={e => setNotes(e.target.value)} />
-                        </div>
-                    </Card>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div className="space-y-2">
+                        <Label>Fatura No</Label>
+                        <Input placeholder="Fatura numarası..." value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Fatura Tarihi</Label>
+                        <Input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} />
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label>Fatura Notu</Label>
+                    <Input placeholder="Opsiyonel açıklama..." value={notes} onChange={e => setNotes(e.target.value)} />
+                </div>
+            </Card>
 
-                    {/* Items Table */}
-                    <Card className="overflow-hidden border-neutral-100 shadow-sm">
-                        <div className="p-1 max-h-[500px] overflow-y-auto">
-                            <Table>
-                                <TableHeader className="bg-neutral-50 sticky top-0">
-                                    <TableRow>
-                                        <TableHead className="w-[150px]">Mahal / Blok</TableHead>
-                                        <TableHead className="min-w-[200px]">Malzeme</TableHead>
-                                        <TableHead className="w-[120px]">Kime Ait?</TableHead>
-                                        <TableHead className="w-[100px]">Miktar (Ton)</TableHead>
-                                        <TableHead className="w-[120px]">Birim Fiyat</TableHead>
-                                        <TableHead className="w-[120px]">Tutar</TableHead>
-                                        <TableHead className="w-[50px]"></TableHead>
+            {/* Items Table */}
+            <Card className="overflow-hidden border-neutral-100 shadow-sm">
+                <div className="p-1 max-h-[500px] overflow-y-auto">
+                    <Table>
+                        <TableHeader className="bg-neutral-50 sticky top-0">
+                            <TableRow>
+                                <TableHead className="w-[150px]">Mahal / Blok</TableHead>
+                                <TableHead className="min-w-[200px]">Malzeme</TableHead>
+                                <TableHead className="w-[120px]">Kime Ait?</TableHead>
+                                <TableHead className="w-[100px]">Miktar (Ton)</TableHead>
+                                <TableHead className="w-[120px]">Birim Fiyat</TableHead>
+                                <TableHead className="w-[120px]">Tutar</TableHead>
+                                <TableHead className="w-[50px]"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {items.map((item, index) => (
+                                <TableRow key={item.id} className="group">
+                                    <TableCell className="p-2">
+                                        <Input
+                                            className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
+                                            placeholder="A Blok..."
+                                            value={item.mahal}
+                                            onChange={(e) => {
+                                                const newItems = [...items];
+                                                newItems[index].mahal = e.target.value;
+                                                setItems(newItems);
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell className="p-2">
+                                        <Input
+                                            className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
+                                            placeholder="Örn: Ø12 Nervürlü"
+                                            value={item.description}
+                                            onChange={(e) => {
+                                                const newItems = [...items];
+                                                newItems[index].description = e.target.value;
+                                                setItems(newItems);
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell className="p-2">
+                                        {item.sources.length > 0 ? (
+                                            <div className="px-3 py-1 bg-neutral-100 rounded text-xs text-neutral-500 font-medium">
+                                                Kayıtlara Göre
+                                            </div>
+                                        ) : (
+                                            <Select value={item.allocation} onValueChange={(val: any) => {
+                                                const newItems = [...items];
+                                                newItems[index].allocation = val;
+                                                setItems(newItems);
+                                            }}>
+                                                <SelectTrigger className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Ortak">Ortak (%60/40)</SelectItem>
+                                                    <SelectItem value="Camsan">Camsan (%100)</SelectItem>
+                                                    <SelectItem value="Koparan">Koparan (%100)</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="p-2">
+                                        <Input
+                                            type="number"
+                                            className="h-9 text-right font-mono border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
+                                            value={item.quantity || ''}
+                                            onChange={(e) => {
+                                                const newItems = [...items];
+                                                newItems[index].quantity = parseFloat(e.target.value);
+                                                setItems(newItems);
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell className="p-2">
+                                        <Input
+                                            type="number"
+                                            step="0.00001"
+                                            className="h-9 text-right font-mono border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
+                                            value={item.unit_price || ''}
+                                            onChange={(e) => {
+                                                const newItems = [...items];
+                                                newItems[index].unit_price = parseFloat(e.target.value);
+                                                setItems(newItems);
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell className="p-2">
+                                        <div className="text-right font-mono font-semibold text-neutral-700 px-3">
+                                            <span>
+                                                {item.quantity && item.unit_price ?
+                                                    new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.quantity * item.unit_price)
+                                                    : '-'}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="p-2 text-center">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 text-red-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => removeItem(index)}
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+                <div className="p-3 bg-neutral-50 border-t border-neutral-100">
+                    <Button variant="outline" size="sm" onClick={addItem} className="gap-2 text-neutral-600 hover:text-orange-600 border-dashed">
+                        <Plus className="w-4 h-4" />
+                        Yeni Satır Ekle
+                    </Button>
+                </div>
+            </Card>
+
+            {/* Waybill Selection */}
+            {availableWaybills.length > 0 && (
+                <Card className="p-6 border-neutral-100 shadow-sm">
+                    <h3 className="text-lg font-semibold text-neutral-700 mb-4 flex items-center gap-2">
+                        <Container className="w-5 h-5 text-orange-600" />
+                        Bağlanabilir İrsaliyeler
+                    </h3>
+                    <div className="border rounded-md overflow-hidden">
+                        <Table>
+                            <TableHeader className="bg-neutral-50">
+                                <TableRow>
+                                    <TableHead className="w-[50px]">Seç</TableHead>
+                                    <TableHead>Tarih</TableHead>
+                                    <TableHead>İrsaliye No</TableHead>
+                                    <TableHead>Malzeme</TableHead>
+                                    <TableHead>Miktar</TableHead>
+                                    <TableHead>Mahal</TableHead>
+                                    <TableHead>Şirket/Pay</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {availableWaybills.map((wb) => (
+                                    <TableRow key={`wb-${wb.id}`} className={selectedWaybills.includes(wb.id) ? "bg-orange-50" : ""}>
+                                        <TableCell>
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
+                                                checked={selectedWaybills.includes(wb.id)}
+                                                onChange={(e) => {
+                                                    let newSelected = [...selectedWaybills];
+                                                    if (e.target.checked) {
+                                                        newSelected.push(wb.id);
+                                                    } else {
+                                                        newSelected = newSelected.filter(id => id !== wb.id);
+                                                    }
+                                                    setSelectedWaybills(newSelected);
+                                                    syncItemsWithSelection(newSelected, selectedMachineLogs);
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell><span>{new Date(wb.date).toLocaleDateString('tr-TR')}</span></TableCell>
+                                        <TableCell><span>{wb.waybill_no || '-'}</span></TableCell>
+                                        <TableCell><span>{wb.materials?.name || '-'}</span></TableCell>
+                                        <TableCell><span>{wb.quantity} {wb.unit}</span></TableCell>
+                                        <TableCell><span>{wb.location || '-'}</span></TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className={
+                                                wb.allocation === 'Camsan' ? "border-blue-200 bg-blue-50 text-blue-700" :
+                                                    wb.allocation === 'Koparan' ? "border-green-200 bg-green-50 text-green-700" :
+                                                        "border-neutral-200 bg-neutral-50 text-neutral-600"
+                                            }>
+                                                {wb.allocation || 'Ortak'}
+                                            </Badge>
+                                        </TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {items.map((item, index) => (
-                                        <TableRow key={item.id} className="group">
-                                            <TableCell className="p-2">
-                                                <Input
-                                                    className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
-                                                    placeholder="A Blok..."
-                                                    value={item.mahal}
-                                                    onChange={(e) => {
-                                                        const newItems = [...items];
-                                                        newItems[index].mahal = e.target.value;
-                                                        setItems(newItems);
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                <Input
-                                                    className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
-                                                    placeholder="Örn: Ø12 Nervürlü"
-                                                    value={item.description}
-                                                    onChange={(e) => {
-                                                        const newItems = [...items];
-                                                        newItems[index].description = e.target.value;
-                                                        setItems(newItems);
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                {item.sources.length > 0 ? (
-                                                    <div className="px-3 py-1 bg-neutral-100 rounded text-xs text-neutral-500 font-medium">
-                                                        Kayıtlara Göre
-                                                    </div>
-                                                ) : (
-                                                    <Select value={item.allocation} onValueChange={(val: any) => {
-                                                        const newItems = [...items];
-                                                        newItems[index].allocation = val;
-                                                        setItems(newItems);
-                                                    }}>
-                                                        <SelectTrigger className="h-9 border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500">
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="Ortak">Ortak (%60/40)</SelectItem>
-                                                            <SelectItem value="Camsan">Camsan (%100)</SelectItem>
-                                                            <SelectItem value="Koparan">Koparan (%100)</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                <Input
-                                                    type="number"
-                                                    className="h-9 text-right font-mono border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
-                                                    value={item.quantity || ''}
-                                                    onChange={(e) => {
-                                                        const newItems = [...items];
-                                                        newItems[index].quantity = parseFloat(e.target.value);
-                                                        setItems(newItems);
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                <Input
-                                                    type="number"
-                                                    step="0.00001"
-                                                    className="h-9 text-right font-mono border-transparent bg-transparent hover:bg-white hover:border-neutral-200 focus:bg-white focus:border-blue-500"
-                                                    value={item.unit_price || ''}
-                                                    onChange={(e) => {
-                                                        const newItems = [...items];
-                                                        newItems[index].unit_price = parseFloat(e.target.value);
-                                                        setItems(newItems);
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="p-2">
-                                                <div className="text-right font-mono font-semibold text-neutral-700 px-3">
-                                                    <span>
-                                                        {item.quantity && item.unit_price ?
-                                                            new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.quantity * item.unit_price)
-                                                            : '-'}
-                                                    </span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="p-2 text-center">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0 text-red-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    onClick={() => removeItem(index)}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Card>
+            )}
+
+            {/* Machine Log Selection */}
+            {availableMachineLogs.length > 0 && (
+                <Card className="p-6 border-neutral-100 shadow-sm">
+                    <h3 className="text-lg font-semibold text-neutral-700 mb-4 flex items-center gap-2">
+                        <Clock className="w-5 h-5 text-blue-600" />
+                        Bağlanabilir Makine Çalışmaları
+                    </h3>
+                    <div className="border rounded-md overflow-hidden">
+                        <Table>
+                            <TableHeader className="bg-neutral-50">
+                                <TableRow>
+                                    <TableHead className="w-[50px]">Seç</TableHead>
+                                    <TableHead>Tarih</TableHead>
+                                    <TableHead>Makine</TableHead>
+                                    <TableHead>Miktar/Süre</TableHead>
+                                    <TableHead>Konum</TableHead>
+                                    <TableHead>Açıklama</TableHead>
+                                    <TableHead>Şirket/Pay</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {availableMachineLogs.map((log) => (
+                                    <TableRow key={`ml-${log.id}`} className={selectedMachineLogs.includes(log.id) ? "bg-blue-50" : ""}>
+                                        <TableCell>
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                                                checked={selectedMachineLogs.includes(log.id)}
+                                                onChange={(e) => {
+                                                    let newSelected = [...selectedMachineLogs];
+                                                    if (e.target.checked) {
+                                                        newSelected.push(log.id);
+                                                    } else {
+                                                        newSelected = newSelected.filter(id => id !== log.id);
+                                                    }
+                                                    setSelectedMachineLogs(newSelected);
+                                                    syncItemsWithSelection(selectedWaybills, newSelected);
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell><span>{new Date(log.transaction_date).toLocaleDateString('tr-TR')}</span></TableCell>
+                                        <TableCell><span>{log.category}</span></TableCell>
+                                        <TableCell><span>{log.quantity} {log.unit}</span></TableCell>
+                                        <TableCell><span>{log.district || '-'}</span></TableCell>
+                                        <TableCell className="text-xs text-neutral-500 truncate max-w-[200px]" title={log.description}>
+                                            <span>{log.description || '-'}</span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className={
+                                                log.allocation === 'Camsan' ? "border-blue-200 bg-blue-50 text-blue-700" :
+                                                    log.allocation === 'Koparan' ? "border-green-200 bg-green-50 text-green-700" :
+                                                        "border-neutral-200 bg-neutral-50 text-neutral-600"
+                                            }>
+                                                {log.allocation || 'Ortak'}
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </Card>
+            )}
+
+            {/* Summary Footer */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 p-4 shadow-lg z-20 md:pl-72">
+                <div className="max-w-5xl mx-auto flex items-center justify-end gap-6">
+                    {/* Cost Allocation Summary */}
+                    <div className="flex gap-4 border-r border-neutral-200 pr-6 mr-2">
+                        <div className="text-right">
+                            <div className="text-xs text-neutral-500 mb-1">Camsan Payı</div>
+                            <div className="font-semibold text-neutral-700">
+                                <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.camsanShare)}</span>
+                            </div>
                         </div>
-                        <div className="p-3 bg-neutral-50 border-t border-neutral-100">
-                            <Button variant="outline" size="sm" onClick={addItem} className="gap-2 text-neutral-600 hover:text-orange-600 border-dashed">
-                                <Plus className="w-4 h-4" />
-                                Yeni Satır Ekle
-                            </Button>
-                        </div>
-                    </Card>
-
-                    {/* Waybill Selection */}
-                    {availableWaybills.length > 0 && (
-                        <Card className="p-6 border-neutral-100 shadow-sm">
-                            <h3 className="text-lg font-semibold text-neutral-700 mb-4 flex items-center gap-2">
-                                <Container className="w-5 h-5 text-orange-600" />
-                                Bağlanabilir İrsaliyeler
-                            </h3>
-                            <div className="border rounded-md overflow-hidden">
-                                <Table>
-                                    <TableHeader className="bg-neutral-50">
-                                        <TableRow>
-                                            <TableHead className="w-[50px]">Seç</TableHead>
-                                            <TableHead>Tarih</TableHead>
-                                            <TableHead>İrsaliye No</TableHead>
-                                            <TableHead>Malzeme</TableHead>
-                                            <TableHead>Miktar</TableHead>
-                                            <TableHead>Mahal</TableHead>
-                                            <TableHead>Şirket/Pay</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {availableWaybills.map((wb) => (
-                                            <TableRow key={`wb-${wb.id}`} className={selectedWaybills.includes(wb.id) ? "bg-orange-50" : ""}>
-                                                <TableCell>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="w-4 h-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
-                                                        checked={selectedWaybills.includes(wb.id)}
-                                                        onChange={(e) => {
-                                                            let newSelected = [...selectedWaybills];
-                                                            if (e.target.checked) {
-                                                                newSelected.push(wb.id);
-                                                            } else {
-                                                                newSelected = newSelected.filter(id => id !== wb.id);
-                                                            }
-                                                            setSelectedWaybills(newSelected);
-                                                            syncItemsWithSelection(newSelected, selectedMachineLogs);
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                <TableCell><span>{new Date(wb.date).toLocaleDateString('tr-TR')}</span></TableCell>
-                                                <TableCell><span>{wb.waybill_no || '-'}</span></TableCell>
-                                                <TableCell><span>{wb.materials?.name || '-'}</span></TableCell>
-                                                <TableCell><span>{wb.quantity} {wb.unit}</span></TableCell>
-                                                <TableCell><span>{wb.location || '-'}</span></TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline" className={
-                                                        wb.allocation === 'Camsan' ? "border-blue-200 bg-blue-50 text-blue-700" :
-                                                            wb.allocation === 'Koparan' ? "border-green-200 bg-green-50 text-green-700" :
-                                                                "border-neutral-200 bg-neutral-50 text-neutral-600"
-                                                    }>
-                                                        {wb.allocation || 'Ortak'}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                        <div className="text-right">
+                            <div className="text-xs text-neutral-500 mb-1">Koparan Payı</div>
+                            <div className="font-semibold text-neutral-700">
+                                <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.koparanShare)}</span>
                             </div>
-                        </Card>
-                    )}
-
-                    {/* Machine Log Selection */}
-                    {availableMachineLogs.length > 0 && (
-                        <Card className="p-6 border-neutral-100 shadow-sm">
-                            <h3 className="text-lg font-semibold text-neutral-700 mb-4 flex items-center gap-2">
-                                <Clock className="w-5 h-5 text-blue-600" />
-                                Bağlanabilir Makine Çalışmaları
-                            </h3>
-                            <div className="border rounded-md overflow-hidden">
-                                <Table>
-                                    <TableHeader className="bg-neutral-50">
-                                        <TableRow>
-                                            <TableHead className="w-[50px]">Seç</TableHead>
-                                            <TableHead>Tarih</TableHead>
-                                            <TableHead>Makine</TableHead>
-                                            <TableHead>Miktar/Süre</TableHead>
-                                            <TableHead>Konum</TableHead>
-                                            <TableHead>Açıklama</TableHead>
-                                            <TableHead>Şirket/Pay</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {availableMachineLogs.map((log) => (
-                                            <TableRow key={`ml-${log.id}`} className={selectedMachineLogs.includes(log.id) ? "bg-blue-50" : ""}>
-                                                <TableCell>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                                                        checked={selectedMachineLogs.includes(log.id)}
-                                                        onChange={(e) => {
-                                                            let newSelected = [...selectedMachineLogs];
-                                                            if (e.target.checked) {
-                                                                newSelected.push(log.id);
-                                                            } else {
-                                                                newSelected = newSelected.filter(id => id !== log.id);
-                                                            }
-                                                            setSelectedMachineLogs(newSelected);
-                                                            syncItemsWithSelection(selectedWaybills, newSelected);
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                <TableCell><span>{new Date(log.transaction_date).toLocaleDateString('tr-TR')}</span></TableCell>
-                                                <TableCell><span>{log.category}</span></TableCell>
-                                                <TableCell><span>{log.quantity} {log.unit}</span></TableCell>
-                                                <TableCell><span>{log.district || '-'}</span></TableCell>
-                                                <TableCell className="text-xs text-neutral-500 truncate max-w-[200px]" title={log.description}>
-                                                    <span>{log.description || '-'}</span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="outline" className={
-                                                        log.allocation === 'Camsan' ? "border-blue-200 bg-blue-50 text-blue-700" :
-                                                            log.allocation === 'Koparan' ? "border-green-200 bg-green-50 text-green-700" :
-                                                                "border-neutral-200 bg-neutral-50 text-neutral-600"
-                                                    }>
-                                                        {log.allocation || 'Ortak'}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        </Card>
-                    )}
-
-                    {/* Summary Footer */}
-                    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 p-4 shadow-lg z-20 md:pl-72">
-                        <div className="max-w-5xl mx-auto flex items-center justify-end gap-6">
-                            {/* Cost Allocation Summary */}
-                            <div className="flex gap-4 border-r border-neutral-200 pr-6 mr-2">
-                                <div className="text-right">
-                                    <div className="text-xs text-neutral-500 mb-1">Camsan Payı</div>
-                                    <div className="font-semibold text-neutral-700">
-                                        <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.camsanShare)}</span>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-xs text-neutral-500 mb-1">Koparan Payı</div>
-                                    <div className="font-semibold text-neutral-700">
-                                        <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.koparanShare)}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-right space-y-1">
-                                <div className="text-xs text-neutral-500">
-                                    Ara Toplam: <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.subtotal)}</span>
-                                </div>
-                                <div className="text-xs text-neutral-500">
-                                    + KDV (%20): <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.tax)}</span>
-                                </div>
-                                {totals.withholding > 0 && (
-                                    <div className="text-xs text-red-500 font-medium">
-                                        - Tevkifat (5/10): <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.withholding)}</span>
-                                    </div>
-                                )}
-                                <div className="text-2xl font-bold text-zinc-800 font-mono mt-1">
-                                    <span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(totals.grandTotal)}</span>
-                                </div>
-                            </div>
-                            <Button size="lg" className="h-12 px-8 bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200" onClick={handleSave} disabled={loading}>
-                                {loading ? 'Kaydediliyor...' : (
-                                    <>
-                                        <Save className="w-4 h-4 mr-2" />
-                                        Faturayı Kaydet
-                                    </>
-                                )}
-                            </Button>
                         </div>
                     </div>
-
+                    <div className="text-right space-y-1">
+                        <div className="text-xs text-neutral-500">
+                            Ara Toplam: <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.subtotal)}</span>
+                        </div>
+                        <div className="text-xs text-neutral-500">
+                            + KDV (%20): <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.tax)}</span>
+                        </div>
+                        {totals.withholding > 0 && (
+                            <div className="text-xs text-red-500 font-medium">
+                                - Tevkifat (5/10): <span>{new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totals.withholding)}</span>
+                            </div>
+                        )}
+                        <div className="text-2xl font-bold text-zinc-800 font-mono mt-1">
+                            <span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(totals.grandTotal)}</span>
+                        </div>
+                    </div>
+                    <Button size="lg" className="h-12 px-8 bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200" onClick={handleSave} disabled={loading}>
+                        {loading ? 'Kaydediliyor...' : (
+                            <>
+                                <Save className="w-4 h-4 mr-2" />
+                                Faturayı Kaydet
+                            </>
+                        )}
+                    </Button>
                 </div>
             </div>
+
         </div>
+            </div >
+        </div >
     );
 }

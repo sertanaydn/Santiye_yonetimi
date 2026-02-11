@@ -126,9 +126,10 @@ export default function IronInvoiceListPage() {
                 supplier_name: selectedInvoice.supplier,
                 document_no: selectedInvoice.invoice_number,
                 district: 'Şantiye', // Genel
-                work_type: 'Malzeme Faturası', // Malzeme Faturası
-                description: transactionDescription, // Kullanıcının girdiği not
-                category: 'İnşaat Demiri', // Kategori
+                district: 'Şantiye', // Genel
+                work_type: selectedInvoice.work_type || 'Malzeme Faturası', // Dynamic Work Type
+                description: selectedInvoice.notes || `Fatura No: ${selectedInvoice.invoice_number}`, // Strict notes use
+                category: selectedInvoice.category || 'İnşaat Demiri', // Dynamic Category
                 detail: '', // Detay boş olabilir
                 quantity: 1,
                 unit: 'Adet',
