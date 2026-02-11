@@ -1,3 +1,38 @@
+# Şantiye Yöneticisi
+
+Bu proje Şantiye Yönetim süreçlerini dijitalleştirmek için hazırlanan Next.js uygulamasıdır.
+
+## Başlangıç
+
+Projeyi kendi bilgisayarınızda çalıştırmak için:
+
+1. Repoyu klonlayın:
+   ```bash
+   git clone https://github.com/sertanaydn/Santiye_yonetimi.git
+   ```
+
+2. Proje dizinine girin:
+   ```bash
+   cd santiye-yoneticisi
+   ```
+
+3. Gerekli bağımlılıkları yükleyin:
+   ```bash
+   npm install
+   ```
+
+4. Çevresel Değişkenleri Ayarlayın:
+   - `.env.example` dosyasının adını `.env.local` olarak değiştirin.
+   - İçerisindeki `YOUR_SUPABASE_URL`, `GOOGLE_SHEETS_CREDENTIALS` gibi alanları kendi bilgilerinizle doldurun.
+
+5. Uygulamayı başlatın:
+   ```bash
+   npm run dev
+   ```
+
+## Antigravity Kit
+Bu proje Antigravity Kit altyapısı kullanılarak oluşturulmuştur.
+
 # Antigravity Kit
 
 > AI Agent templates with Skills, Agents, and Workflows
