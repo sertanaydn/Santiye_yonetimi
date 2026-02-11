@@ -127,7 +127,7 @@ export default function IronInvoiceListPage() {
                 document_no: selectedInvoice.invoice_number,
                 district: 'Şantiye', // Genel
                 work_type: selectedInvoice.work_type || 'Malzeme Faturası', // Dynamic Work Type
-                description: selectedInvoice.notes || `Fatura No: ${selectedInvoice.invoice_number}`, // Strict notes use
+                description: selectedInvoice.notes, // Kullanıcı ne yazarsa o. Boşsa boş.
                 category: selectedInvoice.category || 'İnşaat Demiri', // Dynamic Category
                 detail: '', // Detay boş olabilir
                 quantity: 1,
