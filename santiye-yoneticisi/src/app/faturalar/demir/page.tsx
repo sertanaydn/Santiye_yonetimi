@@ -132,12 +132,11 @@ export default function IronInvoiceListPage() {
                 detail: '', // Detay boş olabilir
                 quantity: 1,
                 unit: 'Adet',
-                unit_price: selectedInvoice.grand_total,
-                amount: selectedInvoice.grand_total, // KDV dahil mi hariç mi? Genelde Cari'ye toplam borç işlenir.
-                vat_amount: 0, // Toplam tutar üzerinden gidildiği için KDV ayrımı ayrıca yapılmıyor bu aşamada, veya grand_total içinde.
-                total_amount: selectedInvoice.grand_total,
+                unit_price: selectedInvoice.total_amount, // KDV Hariç Tutar
+                amount: selectedInvoice.total_amount, // KDV Hariç Tutar
+                vat_amount: selectedInvoice.tax_amount, // KDV Tutarı
+                total_amount: selectedInvoice.grand_total, // Genel Toplam (KDV Dahil)
                 company: 'Merkez', // Genel varsayılan
-                // invoice_id: selectedInvoice.id
             };
 
             const { error: insertError } = await supabase
