@@ -114,38 +114,35 @@ export default function IronInvoiceListPage() {
                 return;
             }
 
-            // 2. Her kalemi site_transactions (Cari) tablosuna ekle
-            const transactionsToAdd = items.map((item: any) => {
-                // Firma belirle (Allocation -> Firm Name)
-                let firmName = 'Camsan'; // Varsayılan
-                if (item.allocation === 'Koparan') firmName = 'Koparan';
-                if (item.allocation === 'Ortak') firmName = 'Camsan&Koparan'; // Ortaklar genellikle Camsan&Koparan olarak geçer
+            // 2. Faturayı Tek Kalem Olarak Ekle (User Request: Tek satır ve toplam tutar)
+            // Description olarak kullanıcının girdiği notu (veya varsayılan formatı) kullan.
 
-                return {
-                    status: 'ONAYLANDI', // Faturadan geldiği için onaylı
-                    transaction_date: selectedInvoice.invoice_date,
-                    firm_name: firmName,
-                    supplier_name: selectedInvoice.supplier,
-                    document_no: selectedInvoice.invoice_number,
-                    district: item.mahal || 'Şantiye',
-                    work_type: 'Malzeme Faturası', // Demir Faturası, Malzeme olarak geçer
-                    description: item.description, // Örn: Ø12 Nervürlü
-                    category: 'İnşaat Demiri', // Kategori
-                    detail: item.description,
-                    quantity: item.quantity,
-                    unit: item.unit || 'Ton',
-                    unit_price: item.unit_price,
-                    amount: item.quantity * item.unit_price,
-                    vat_amount: (item.quantity * item.unit_price) * 0.20, // %20 KDV varsayıyoruz
-                    total_amount: (item.quantity * item.unit_price) * 1.20,
-                    company: 'Merkez', // Genel varsayılan
-                    // invoice_id: selectedInvoice.id // Eğer tabloda varsa bağlanabilir
-                };
-            });
+            const transactionDescription = selectedInvoice.notes || `Fatura No: ${selectedInvoice.invoice_number} - Demir Alımı`;
+
+            const transactionToAdd = {
+                status: 'ONAYLANDI', // Faturadan geldiği için onaylı
+                transaction_date: selectedInvoice.invoice_date,
+                firm_name: 'Camsan&Koparan', // User request: Tek satır. Varsayılan Ortak.
+                supplier_name: selectedInvoice.supplier,
+                document_no: selectedInvoice.invoice_number,
+                district: 'Şantiye', // Genel
+                work_type: 'Malzeme Faturası', // Malzeme Faturası
+                description: transactionDescription, // Kullanıcının girdiği not
+                category: 'İnşaat Demiri', // Kategori
+                detail: '', // Detay boş olabilir
+                quantity: 1,
+                unit: 'Adet',
+                unit_price: selectedInvoice.grand_total,
+                amount: selectedInvoice.grand_total, // KDV dahil mi hariç mi? Genelde Cari'ye toplam borç işlenir.
+                vat_amount: 0, // Toplam tutar üzerinden gidildiği için KDV ayrımı ayrıca yapılmıyor bu aşamada, veya grand_total içinde.
+                total_amount: selectedInvoice.grand_total,
+                company: 'Merkez', // Genel varsayılan
+                // invoice_id: selectedInvoice.id
+            };
 
             const { error: insertError } = await supabase
                 .from('site_transactions')
-                .insert(transactionsToAdd);
+                .insert([transactionToAdd]); // Tek satır insert
 
             if (insertError) throw insertError;
 

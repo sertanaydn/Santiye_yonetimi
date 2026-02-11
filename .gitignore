@@ -39,3 +39,7 @@ next-env.d.ts
 antigravity-doc
 tests
 others
+
+# Secrets
+credantials.json
+credentials.json

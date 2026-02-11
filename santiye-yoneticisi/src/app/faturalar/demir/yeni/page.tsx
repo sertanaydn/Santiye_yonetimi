@@ -216,7 +216,15 @@ export default function NewIronInvoicePage() {
             koparanShare = (koparanTotal / totalBase) * grandTotal;
         }
 
-        setTotals({ subtotal, tax, withholding, payableTax, grandTotal, camsanShare, koparanShare });
+        setTotals({
+            subtotal,
+            tax,
+            withholding,
+            payableTax,
+            grandTotal,
+            camsanShare,
+            koparanShare
+        });
     }
 
     function addItem() {
