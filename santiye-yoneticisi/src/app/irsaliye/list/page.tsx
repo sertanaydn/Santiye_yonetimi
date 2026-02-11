@@ -11,6 +11,7 @@ import { Search, Filter, Download, Plus, Eye, Image as ImageIcon } from "lucide-
 import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/layout/page-header";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { toast } from "sonner"; // Ensure toast is imported properly
 
 export default function WaybillListPage() {
     const [waybills, setWaybills] = useState<any[]>([]);
@@ -33,6 +34,54 @@ export default function WaybillListPage() {
         if (data) setWaybills(data);
         setLoading(false);
     }
+
+    const handleTransferToAccount = async (waybill: any) => {
+        if (!confirm(`${waybill.waybill_no || 'Bu'} irsaliyeyi Cari Yönetim'e aktarmak istiyor musunuz? (Tutar 0 TL olarak işlenecek)`)) return;
+
+        try {
+            // 1. Create entry in site_transactions
+            const transactionRecord = {
+                transaction_date: waybill.date,
+                firm_name: waybill.company === 'Camsan&Koparan' ? 'Ortak' : (waybill.company || 'Ortak'),
+                supplier_name: waybill.supplier,
+                document_no: waybill.waybill_no,
+                work_type: 'Malzeme İrsaliyesi',
+                description: `İrsaliye No: ${waybill.waybill_no} - ${waybill.materials?.name || 'Malzeme'}`,
+                category: 'İnşaat Demiri', // Assuming Iron for now based on context, or derive from material
+                quantity: waybill.quantity,
+                unit: waybill.unit || waybill.materials?.unit,
+                unit_price: 0,
+                amount: 0,
+                total_amount: 0,
+                vat_amount: 0,
+                status: 'BEKLEYEN', // Or ONAYLANDI
+                district: waybill.location || 'Şantiye',
+                company: 'Merkez',
+                detail: waybill.notes
+            };
+
+            const { error: insertError } = await supabase
+                .from('site_transactions')
+                .insert([transactionRecord]);
+
+            if (insertError) throw insertError;
+
+            // 2. Update waybill sync_status
+            const { error: updateError } = await supabase
+                .from('waybills')
+                .update({ sync_status: true })
+                .eq('id', waybill.id);
+
+            if (updateError) throw updateError;
+
+            toast.success("İrsaliye Cari Yönetim'e aktarıldı.");
+            fetchWaybills(); // Refresh list
+
+        } catch (error: any) {
+            console.error('Transfer hatası:', error);
+            toast.error('Aktarım başarısız: ' + error.message);
+        }
+    };
 
     return (
         <div className="flex flex-col h-full bg-[#f8f9fa]">
@@ -108,9 +157,16 @@ export default function WaybillListPage() {
                                                         </Dialog>
                                                     )}
                                                     {w.sync_status ? (
-                                                        <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 text-[10px]">OK</Badge>
+                                                        <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 text-[10px]">Aktarıldı</Badge>
                                                     ) : (
-                                                        <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200 text-[10px]">Wait</Badge>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => handleTransferToAccount(w)}
+                                                            className="h-7 text-xs border-dashed border-blue-300 text-blue-600 hover:bg-blue-50"
+                                                        >
+                                                            Cariye Aktar
+                                                        </Button>
                                                     )}
                                                 </div>
                                             </TableCell>
