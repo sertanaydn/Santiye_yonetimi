@@ -27,7 +27,7 @@ export default function WaybillListPage() {
             .from('waybills')
             .select(`
                 *,
-                materials (name, unit)
+                materials (name, unit, category)
             `)
             .order('date', { ascending: false });
 
@@ -40,14 +40,19 @@ export default function WaybillListPage() {
 
         try {
             // 1. Create entry in site_transactions
+            // Fixes: 
+            // - Description: Uses user notes directly
+            // - Category: Uses material category or 'Malzeme'
+            // - Detail: Uses material name
+
             const transactionRecord = {
                 transaction_date: waybill.date,
                 firm_name: waybill.company === 'Camsan&Koparan' ? 'Ortak' : (waybill.company || 'Ortak'),
                 supplier_name: waybill.supplier,
                 document_no: waybill.waybill_no,
                 work_type: 'Malzeme İrsaliyesi',
-                description: `İrsaliye No: ${waybill.waybill_no} - ${waybill.materials?.name || 'Malzeme'}`,
-                category: 'İnşaat Demiri', // Assuming Iron for now based on context, or derive from material
+                description: waybill.notes || '', // User request: Use notes directly
+                category: waybill.materials?.category || 'Malzeme', // User request: Dynamic category
                 quantity: waybill.quantity,
                 unit: waybill.unit || waybill.materials?.unit,
                 unit_price: 0,
@@ -57,7 +62,7 @@ export default function WaybillListPage() {
                 status: 'BEKLEYEN', // Or ONAYLANDI
                 district: waybill.location || 'Şantiye',
                 company: 'Merkez',
-                detail: waybill.notes
+                detail: waybill.materials?.name || '' // User request: Material name in detail
             };
 
             const { error: insertError } = await supabase
