@@ -96,10 +96,7 @@ export default function RequestPage() {
                     <div className="mb-12 border border-neutral-300 rounded-sm overflow-hidden">
                         <table className="w-full border-collapse">
                             <tbody>
-                                <tr className="border-b border-neutral-300">
-                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 w-1/3 border-r border-neutral-300 uppercase text-sm tracking-wide">Talep Eden (Bölüm)</td>
-                                    <td className="p-4 font-medium text-lg">{lastRequest.requester}</td>
-                                </tr>
+
                                 <tr className="border-b border-neutral-300">
                                     <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">İstenen Malzeme</td>
                                     <td className="p-4 text-xl font-bold text-neutral-900">{lastRequest.item_name}</td>
