@@ -28,8 +28,8 @@ export default function RequestPage() {
     });
 
     // Approver Titles State
-    const [approver1, setApprover1] = useState('Proje Müdürü Onay');
-    const [approver2, setApprover2] = useState('Şantiye Şefi Onay');
+    const [approver1, setApprover1] = useState('YİĞİT PAPAĞAN');
+    const [approver2, setApprover2] = useState('KONTROL EDEN');
 
     const [lastRequest, setLastRequest] = useState<any>(null); // To show print view after save
 
@@ -100,27 +100,16 @@ export default function RequestPage() {
                     </table>
 
                     <div className="flex justify-between mt-20 px-8 text-center">
-                        <div>
-                            <p className="font-bold border-t border-black pt-2 w-40 mx-auto">Talep Eden</p>
-                            <p className="mt-8 text-gray-400">(İmza)</p>
+                        <div className="flex flex-col items-center">
+                            <p className="font-bold border-t border-black pt-2 w-48 mx-auto">TALEP EDEN</p>
+                            <p className="mt-2 font-semibold">YİĞİT PAPAĞAN</p>
+                            <p className="mt-6 text-gray-400">(İmza)</p>
                         </div>
-                        <div>
-                            <input
-                                value={approver1}
-                                onChange={(e) => setApprover1(e.target.value)}
-                                className="font-bold border-t border-black pt-2 w-48 mx-auto text-center bg-transparent focus:outline-none focus:bg-yellow-50 placeholder-gray-400"
-                                placeholder="Onaylayan 1"
-                            />
-                            <p className="mt-8 text-gray-400">(İmza)</p>
-                        </div>
-                        <div>
-                            <input
-                                value={approver2}
-                                onChange={(e) => setApprover2(e.target.value)}
-                                className="font-bold border-t border-black pt-2 w-48 mx-auto text-center bg-transparent focus:outline-none focus:bg-yellow-50 placeholder-gray-400"
-                                placeholder="Onaylayan 2"
-                            />
-                            <p className="mt-8 text-gray-400">(İmza)</p>
+
+                        <div className="flex flex-col items-center">
+                            <p className="font-bold border-t border-black pt-2 w-48 mx-auto">KONTROL EDEN</p>
+                            <p className="mt-2 font-semibold">TOLGA SÜZEN</p>
+                            <p className="mt-6 text-gray-400">(İmza)</p>
                         </div>
                     </div>
 
