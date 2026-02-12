@@ -74,57 +74,88 @@ export default function RequestPage() {
                 </div>
 
                 {/* Printable Area */}
-                <div ref={printRef} className="bg-white p-8 w-[21cm] min-h-[29.7cm] shadow-lg text-black print:shadow-none">
-                    <div className="border-b-2 border-black pb-4 mb-8 text-center">
-                        <h1 className="text-2xl font-bold">MALZEME SATIN ALMA TALEP FORMU</h1>
-                        <p className="text-sm mt-2">Tarih: {lastRequest.request_date}</p>
-                    </div>
+                <div ref={printRef} className="bg-white p-12 w-[21cm] min-h-[29.7cm] shadow-xl text-black print:shadow-none print:w-full print:h-full relative font-serif">
 
-                    <table className="w-full border-collapse border border-black mb-12">
-                        <tbody>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100 w-1/3">Talep Eden (Bölüm)</td>
-                                <td className="border border-black p-3">{lastRequest.requester}</td>
-                            </tr>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100">İstenen Malzeme</td>
-                                <td className="border border-black p-3 text-lg">{lastRequest.item_name}</td>
-                            </tr>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100">Miktar</td>
-                                <td className="border border-black p-3 text-lg">{lastRequest.quantity}</td>
-                            </tr>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100">Aciliyet Durumu</td>
-                                <td className="border border-black p-3 uppercase font-bold">{lastRequest.urgency}</td>
-                            </tr>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100">Kullanılacak Mahal</td>
-                                <td className="border border-black p-3">{lastRequest.location}</td>
-                            </tr>
-                            <tr>
-                                <td className="border border-black p-3 font-bold bg-gray-100">Açıklama</td>
-                                <td className="border border-black p-3">{lastRequest.description}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div className="flex justify-between mt-20 px-8 text-center">
-                        <div className="flex flex-col items-center">
-                            <p className="font-bold border-t border-black pt-2 w-48 mx-auto">TALEP EDEN</p>
-                            <p className="mt-2 font-semibold">YİĞİT PAPAĞAN</p>
-                            <p className="mt-6 text-gray-400">(İmza)</p>
+                    {/* Header */}
+                    <div className="flex justify-between items-center border-b-4 border-double border-neutral-800 pb-6 mb-8">
+                        <div>
+                            <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900">MALZEME SATIN ALMA TALEP FORMU</h1>
+                            <p className="text-neutral-500 text-sm mt-1 uppercase tracking-wider font-semibold">Şantiye Yönetim Sistemi</p>
                         </div>
-
-                        <div className="flex flex-col items-center">
-                            <p className="font-bold border-t border-black pt-2 w-48 mx-auto">KONTROL EDEN</p>
-                            <p className="mt-2 font-semibold">TOLGA SÜZEN</p>
-                            <p className="mt-6 text-gray-400">(İmza)</p>
+                        <div className="text-right">
+                            <div className="bg-neutral-100 p-3 rounded border border-neutral-200">
+                                <p className="text-xs text-neutral-500 font-bold uppercase">Tarih</p>
+                                <p className="text-lg font-mono font-bold text-neutral-900">{lastRequest.request_date}</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="absolute bottom-8 left-0 w-full text-center text-xs text-gray-400">
-                        Bu belge Şantiye Yöneticisi v2.0 Sisteminden Otomatik Oluşturulmuştur. Ref: {lastRequest.id}
+                    {/* Content Table */}
+                    <div className="mb-12 border border-neutral-300 rounded-sm overflow-hidden">
+                        <table className="w-full border-collapse">
+                            <tbody>
+                                <tr className="border-b border-neutral-300">
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 w-1/3 border-r border-neutral-300 uppercase text-sm tracking-wide">Talep Eden (Bölüm)</td>
+                                    <td className="p-4 font-medium text-lg">{lastRequest.requester}</td>
+                                </tr>
+                                <tr className="border-b border-neutral-300">
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">İstenen Malzeme</td>
+                                    <td className="p-4 text-xl font-bold text-neutral-900">{lastRequest.item_name}</td>
+                                </tr>
+                                <tr className="border-b border-neutral-300">
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Miktar</td>
+                                    <td className="p-4 text-xl font-mono font-bold text-neutral-900">{lastRequest.quantity} <span className="text-base font-sans font-normal text-neutral-600">{lastRequest.unit}</span></td>
+                                </tr>
+                                <tr className="border-b border-neutral-300">
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
+                                    <td className="p-4">
+                                        <span className={`px-3 py-1 rounded border text-sm font-bold uppercase ${lastRequest.urgency === 'Acil' || lastRequest.urgency === 'Çok Acil'
+                                                ? 'bg-red-50 text-red-700 border-red-200'
+                                                : 'bg-green-50 text-green-700 border-green-200'
+                                            }`}>
+                                            {lastRequest.urgency}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr className="border-b border-neutral-300">
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Kullanılacak Mahal</td>
+                                    <td className="p-4 text-lg">{lastRequest.location || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide align-top h-32">Açıklama</td>
+                                    <td className="p-4 text-lg align-top text-neutral-600 italic">{lastRequest.description || '-'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Signature Section */}
+                    <div className="grid grid-cols-2 gap-12 mt-auto pt-12 mb-12 border-t-2 border-neutral-200">
+                        <div className="text-center p-6 border border-dashed border-neutral-300 rounded bg-neutral-50/50">
+                            <p className="font-bold text-neutral-900 uppercase tracking-widest text-sm mb-1">TALEP EDEN</p>
+                            <div className="h-0.5 w-16 bg-neutral-300 mx-auto mb-4"></div>
+                            <p className="text-lg font-bold text-black mb-12">YİĞİT PAPAĞAN</p>
+                            <div className="border-t border-neutral-400 w-32 mx-auto pt-2">
+                                <p className="text-xs text-neutral-400 uppercase font-semibold">İmza</p>
+                            </div>
+                        </div>
+
+                        <div className="text-center p-6 border border-dashed border-neutral-300 rounded bg-neutral-50/50">
+                            <p className="font-bold text-neutral-900 uppercase tracking-widest text-sm mb-1">KONTROL EDEN</p>
+                            <div className="h-0.5 w-16 bg-neutral-300 mx-auto mb-4"></div>
+                            <p className="text-lg font-bold text-black mb-12">TOLGA SÜZEN</p>
+                            <div className="border-t border-neutral-400 w-32 mx-auto pt-2">
+                                <p className="text-xs text-neutral-400 uppercase font-semibold">İmza</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="absolute bottom-8 left-0 w-full text-center px-12">
+                        <div className="border-t border-neutral-200 pt-3 flex justify-between text-[10px] text-neutral-400 font-mono uppercase">
+                            <span>Sistem Referansı: {lastRequest.id}</span>
+                            <span>{new Date().toLocaleDateString('tr-TR')} • Şantiye Yöneticisi v2.0</span>
+                        </div>
                     </div>
                 </div>
 
