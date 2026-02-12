@@ -199,18 +199,18 @@ export default function PurchaseRequestListPage() {
             {/* Hidden Print Area */}
             <div className="hidden">
                 {selectedRequest && (
-                    <div ref={printRef} className="bg-white p-12 w-[21cm] min-h-[29.7cm] shadow-xl text-black print:shadow-none print:w-full print:h-full relative font-serif">
+                    <div ref={printRef} className="bg-white p-12 w-[21cm] min-h-[29.7cm] shadow-xl text-black print:shadow-none print:w-full print:h-full relative font-sans">
 
                         {/* Header */}
                         <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-6 mb-8">
                             <div className="max-w-[70%]">
-                                <h1 className="text-2xl font-black text-neutral-900 leading-tight">MALZEME SATIN ALMA <br /> TALEP FORMU</h1>
+                                <h1 className="text-2xl font-black text-neutral-900 leading-tight tracking-tight">MALZEME SATIN ALMA <br /> TALEP FORMU</h1>
                                 <p className="text-neutral-500 text-xs mt-2 uppercase tracking-[0.2em] font-bold">Şantiye Yönetim Sistemi</p>
                             </div>
                             <div className="text-right">
                                 <div className="border-2 border-neutral-900 p-2 px-4 text-center">
                                     <p className="text-[10px] text-neutral-500 font-black uppercase tracking-wider mb-1">TARİH</p>
-                                    <p className="text-lg font-mono font-bold text-neutral-900 leading-none">
+                                    <p className="text-lg font-bold text-neutral-900 leading-none">
                                         {new Date(selectedRequest.request_date).toLocaleDateString('tr-TR')}
                                     </p>
                                 </div>
@@ -228,7 +228,7 @@ export default function PurchaseRequestListPage() {
                                     </tr>
                                     <tr className="border-b border-neutral-300">
                                         <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Miktar</td>
-                                        <td className="p-4 text-xl font-mono font-bold text-neutral-900">{selectedRequest.quantity} <span className="text-base font-sans font-normal text-neutral-600">{selectedRequest.unit}</span></td>
+                                        <td className="p-4 text-xl font-bold text-neutral-900">{selectedRequest.quantity} <span className="text-base font-normal text-neutral-600">{selectedRequest.unit}</span></td>
                                     </tr>
                                     <tr className="border-b border-neutral-300">
                                         <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
@@ -276,7 +276,7 @@ export default function PurchaseRequestListPage() {
 
                         {/* Footer */}
                         <div className="absolute bottom-8 left-0 w-full text-center px-12">
-                            <div className="border-t border-neutral-200 pt-3 flex justify-between text-[10px] text-neutral-400 font-mono uppercase">
+                            <div className="border-t border-neutral-200 pt-3 flex justify-between text-[10px] text-neutral-400 uppercase tracking-widest font-medium">
                                 <span>Sistem Referansı: {selectedRequest.id}</span>
                                 <span>{new Date().toLocaleDateString('tr-TR')} • Şantiye Yöneticisi v2.0</span>
                             </div>
