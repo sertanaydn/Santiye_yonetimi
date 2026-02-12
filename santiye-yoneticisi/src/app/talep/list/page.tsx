@@ -205,7 +205,7 @@ export default function PurchaseRequestListPage() {
                         <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-6 mb-8">
                             <div className="max-w-[70%]">
                                 <h1 className="text-2xl font-black text-neutral-900 leading-tight tracking-tight">MALZEME SATIN ALMA <br /> TALEP FORMU</h1>
-                                <p className="text-neutral-500 text-xs mt-2 uppercase tracking-[0.2em] font-bold">Şantiye Yönetim Sistemi</p>
+
                             </div>
                             <div className="text-right">
                                 <div className="border-2 border-neutral-900 p-2 px-4 text-center">
