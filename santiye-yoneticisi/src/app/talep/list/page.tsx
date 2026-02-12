@@ -233,7 +233,7 @@ export default function PurchaseRequestListPage() {
                                     <tr className="border-b border-neutral-300">
                                         <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
                                         <td className="p-4">
-                                            <span className={`px-3 py-1 rounded border text-sm font-bold uppercase ${selectedRequest.urgency === 'Acil' || selectedRequest.urgency === 'Çok Acil'
+                                            <span className={`px-3 py-1 rounded border text-sm font-bold ${selectedRequest.urgency === 'Acil' || selectedRequest.urgency === 'Çok Acil'
                                                 ? 'bg-red-50 text-red-700 border-red-200'
                                                 : 'bg-green-50 text-green-700 border-green-200'
                                                 }`}>

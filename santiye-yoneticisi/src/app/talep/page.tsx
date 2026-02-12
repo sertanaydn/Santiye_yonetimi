@@ -86,7 +86,7 @@ export default function RequestPage() {
                             <div className="border-2 border-neutral-900 p-2 px-4 text-center">
                                 <p className="text-[10px] text-neutral-500 font-black uppercase tracking-wider mb-1">TARİH</p>
                                 <p className="text-lg font-bold text-neutral-900 leading-none">
-                                    {lastRequest.request_date}
+                                    {new Date(lastRequest.request_date).toLocaleDateString('tr-TR')}
                                 </p>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ export default function RequestPage() {
                                 <tr className="border-b border-neutral-300">
                                     <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
                                     <td className="p-4">
-                                        <span className={`px-3 py-1 rounded border text-sm font-bold uppercase ${lastRequest.urgency === 'Acil' || lastRequest.urgency === 'Çok Acil'
+                                        <span className={`px-3 py-1 rounded border text-sm font-bold ${lastRequest.urgency === 'Acil' || lastRequest.urgency === 'Çok Acil'
                                             ? 'bg-red-50 text-red-700 border-red-200'
                                             : 'bg-green-50 text-green-700 border-green-200'
                                             }`}>
