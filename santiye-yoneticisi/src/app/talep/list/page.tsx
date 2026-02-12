@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Trash2, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Trash2, CheckCircle, Clock, AlertTriangle, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
+import { useRef } from 'react';
 
 export default function PurchaseRequestListPage() {
     const [requests, setRequests] = useState<any[]>([]);
@@ -94,6 +96,21 @@ export default function PurchaseRequestListPage() {
         }
     };
 
+    const printRef = useRef(null);
+    const [selectedRequest, setSelectedRequest] = useState<any>(null);
+
+    const handlePrint = useReactToPrint({
+        contentRef: printRef,
+    });
+
+    const triggerPrint = (request: any) => {
+        setSelectedRequest(request);
+        // Wait for state to update then print
+        setTimeout(() => {
+            handlePrint();
+        }, 100);
+    };
+
     return (
         <div className="flex flex-col h-full bg-neutral-50">
             <PageHeader title="Gelen Sipariş Talepleri 📦" backLink="/talep" />
@@ -141,6 +158,16 @@ export default function PurchaseRequestListPage() {
                                         <TableCell>{getStatusBadge(request.status)}</TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="h-8 w-8 text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                                                    onClick={() => triggerPrint(request)}
+                                                    title="Yazdır"
+                                                >
+                                                    <Printer className="w-4 h-4" />
+                                                </Button>
+
                                                 {request.status !== 'Onaylandı' && (
                                                     <Button
                                                         size="sm"
@@ -167,6 +194,57 @@ export default function PurchaseRequestListPage() {
                         </TableBody>
                     </Table>
                 </Card>
+            </div>
+
+            {/* Hidden Print Area */}
+            <div className="hidden">
+                {selectedRequest && (
+                    <div ref={printRef} className="bg-white p-8 w-[21cm] min-h-[29.7cm] text-black">
+                        <div className="border-b-2 border-black pb-4 mb-8 text-center">
+                            <h1 className="text-2xl font-bold">MALZEME SATIN ALMA TALEP FORMU</h1>
+                            <p className="text-sm mt-2">Tarih: {selectedRequest.request_date}</p>
+                        </div>
+
+                        <table className="w-full border-collapse border border-black mb-12">
+                            <tbody>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100 w-1/3">Talep Eden (Bölüm)</td>
+                                    <td className="border border-black p-3">{selectedRequest.requester}</td>
+                                </tr>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100">İstenen Malzeme</td>
+                                    <td className="border border-black p-3 text-lg">{selectedRequest.item_name}</td>
+                                </tr>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100">Miktar</td>
+                                    <td className="border border-black p-3 text-lg">{selectedRequest.quantity} {selectedRequest.unit}</td>
+                                </tr>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100">Aciliyet Durumu</td>
+                                    <td className="border border-black p-3 uppercase font-bold">{selectedRequest.urgency}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div className="flex justify-between mt-20 px-8 text-center">
+                            <div className="flex flex-col items-center">
+                                <p className="font-bold border-t border-black pt-2 w-48 mx-auto">TALEP EDEN</p>
+                                <p className="mt-2 font-semibold">YİĞİT PAPAĞAN</p>
+                                <p className="mt-6 text-gray-400">(İmza)</p>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <p className="font-bold border-t border-black pt-2 w-48 mx-auto">KONTROL EDEN</p>
+                                <p className="mt-2 font-semibold">TOLGA SÜZEN</p>
+                                <p className="mt-6 text-gray-400">(İmza)</p>
+                            </div>
+                        </div>
+
+                        <div className="absolute bottom-8 left-0 w-full text-center text-xs text-gray-400">
+                            Ref: {selectedRequest.id}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
