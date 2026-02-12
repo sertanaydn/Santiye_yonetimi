@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useReactToPrint } from 'react-to-print';
 import { PageHeader } from "@/components/layout/page-header";
+import Link from 'next/link';
+import { List } from 'lucide-react';
 
 export default function RequestPage() {
     const router = useRouter();
@@ -139,7 +141,14 @@ export default function RequestPage() {
     // Normal Form View
     return (
         <div className="flex flex-col h-full bg-neutral-50">
-            <PageHeader title="Satın Alma Talebi 🛒" backLink="/" />
+            <PageHeader title="Satın Alma Talebi 🛒" backLink="/">
+                <Link href="/talep/list">
+                    <Button variant="outline" className="gap-2 bg-white hover:bg-neutral-100 text-neutral-700 border-neutral-200">
+                        <List className="w-4 h-4" />
+                        Talepleri Gör
+                    </Button>
+                </Link>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center pt-8">
                 <Card className="w-full max-w-md shadow-sm border-none sm:border">
