@@ -77,15 +77,17 @@ export default function RequestPage() {
                 <div ref={printRef} className="bg-white p-12 w-[21cm] min-h-[29.7cm] shadow-xl text-black print:shadow-none print:w-full print:h-full relative font-serif">
 
                     {/* Header */}
-                    <div className="flex justify-between items-center border-b-4 border-double border-neutral-800 pb-6 mb-8">
-                        <div>
-                            <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900">MALZEME SATIN ALMA TALEP FORMU</h1>
-                            <p className="text-neutral-500 text-sm mt-1 uppercase tracking-wider font-semibold">Şantiye Yönetim Sistemi</p>
+                    <div className="flex justify-between items-start border-b-2 border-neutral-900 pb-6 mb-8">
+                        <div className="max-w-[70%]">
+                            <h1 className="text-2xl font-black text-neutral-900 leading-tight">MALZEME SATIN ALMA <br /> TALEP FORMU</h1>
+                            <p className="text-neutral-500 text-xs mt-2 uppercase tracking-[0.2em] font-bold">Şantiye Yönetim Sistemi</p>
                         </div>
                         <div className="text-right">
-                            <div className="bg-neutral-100 p-3 rounded border border-neutral-200">
-                                <p className="text-xs text-neutral-500 font-bold uppercase">Tarih</p>
-                                <p className="text-lg font-mono font-bold text-neutral-900">{lastRequest.request_date}</p>
+                            <div className="border-2 border-neutral-900 p-2 px-4 text-center">
+                                <p className="text-[10px] text-neutral-500 font-black uppercase tracking-wider mb-1">TARİH</p>
+                                <p className="text-lg font-mono font-bold text-neutral-900 leading-none">
+                                    {lastRequest.request_date}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -110,8 +112,8 @@ export default function RequestPage() {
                                     <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
                                     <td className="p-4">
                                         <span className={`px-3 py-1 rounded border text-sm font-bold uppercase ${lastRequest.urgency === 'Acil' || lastRequest.urgency === 'Çok Acil'
-                                                ? 'bg-red-50 text-red-700 border-red-200'
-                                                : 'bg-green-50 text-green-700 border-green-200'
+                                            ? 'bg-red-50 text-red-700 border-red-200'
+                                            : 'bg-green-50 text-green-700 border-green-200'
                                             }`}>
                                             {lastRequest.urgency}
                                         </span>
