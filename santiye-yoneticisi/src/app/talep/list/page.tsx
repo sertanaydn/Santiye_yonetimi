@@ -235,7 +235,7 @@ export default function PurchaseRequestListPage() {
                                         <td className="p-4">
                                             <span className={`px-3 py-1 rounded border text-sm font-bold ${selectedRequest.urgency === 'Acil' || selectedRequest.urgency === 'Çok Acil'
                                                 ? 'bg-red-50 text-red-700 border-red-200'
-                                                : 'bg-green-50 text-green-700 border-green-200'
+                                                : 'bg-neutral-100 text-neutral-900 border-neutral-200'
                                                 }`}>
                                                 {selectedRequest.urgency}
                                             </span>
