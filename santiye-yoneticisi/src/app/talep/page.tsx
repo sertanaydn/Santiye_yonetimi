@@ -25,6 +25,10 @@ export default function RequestPage() {
         urgency: 'Normal'
     });
 
+    // Approver Titles State
+    const [approver1, setApprover1] = useState('Proje Müdürü Onay');
+    const [approver2, setApprover2] = useState('Şantiye Şefi Onay');
+
     const [lastRequest, setLastRequest] = useState<any>(null); // To show print view after save
 
     // Print Handler
@@ -99,11 +103,21 @@ export default function RequestPage() {
                             <p className="mt-8 text-gray-400">(İmza)</p>
                         </div>
                         <div>
-                            <p className="font-bold border-t border-black pt-2 w-40 mx-auto">Proje Müdürü Onay</p>
+                            <input
+                                value={approver1}
+                                onChange={(e) => setApprover1(e.target.value)}
+                                className="font-bold border-t border-black pt-2 w-48 mx-auto text-center bg-transparent focus:outline-none focus:bg-yellow-50 placeholder-gray-400"
+                                placeholder="Onaylayan 1"
+                            />
                             <p className="mt-8 text-gray-400">(İmza)</p>
                         </div>
                         <div>
-                            <p className="font-bold border-t border-black pt-2 w-40 mx-auto">Şantiye Şefi Onay</p>
+                            <input
+                                value={approver2}
+                                onChange={(e) => setApprover2(e.target.value)}
+                                className="font-bold border-t border-black pt-2 w-48 mx-auto text-center bg-transparent focus:outline-none focus:bg-yellow-50 placeholder-gray-400"
+                                placeholder="Onaylayan 2"
+                            />
                             <p className="mt-8 text-gray-400">(İmza)</p>
                         </div>
                     </div>
