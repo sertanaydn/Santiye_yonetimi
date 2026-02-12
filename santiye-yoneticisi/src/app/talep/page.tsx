@@ -122,7 +122,7 @@ export default function RequestPage() {
                                 </tr>
                                 <tr>
                                     <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide align-top h-32">Açıklama</td>
-                                    <td className="p-4 text-lg align-top text-neutral-600 italic">{lastRequest.description || '-'}</td>
+                                    <td className="p-4 text-lg align-top text-neutral-600">{lastRequest.description || '-'}</td>
                                 </tr>
                             </tbody>
                         </table>
