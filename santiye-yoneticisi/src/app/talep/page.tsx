@@ -24,6 +24,8 @@ export default function RequestPage() {
         item_name: '',
         quantity: '',
         unit: 'Adet',
+        location: '',
+        description: '',
         urgency: 'Normal'
     });
 
@@ -95,6 +97,14 @@ export default function RequestPage() {
                             <tr>
                                 <td className="border border-black p-3 font-bold bg-gray-100">Aciliyet Durumu</td>
                                 <td className="border border-black p-3 uppercase font-bold">{lastRequest.urgency}</td>
+                            </tr>
+                            <tr>
+                                <td className="border border-black p-3 font-bold bg-gray-100">Kullanılacak Mahal</td>
+                                <td className="border border-black p-3">{lastRequest.location}</td>
+                            </tr>
+                            <tr>
+                                <td className="border border-black p-3 font-bold bg-gray-100">Açıklama</td>
+                                <td className="border border-black p-3">{lastRequest.description}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -184,6 +194,16 @@ export default function RequestPage() {
                                         </SelectContent>
                                     </Select>
                                 </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Kullanılacak Mahal</Label>
+                                <Input placeholder="Örn: A Blok Giriş..." value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Açıklama</Label>
+                                <Input placeholder="Varsa ek notlar..." value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
                             </div>
 
                             <div className="space-y-2">

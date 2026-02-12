@@ -223,6 +223,14 @@ export default function PurchaseRequestListPage() {
                                     <td className="border border-black p-3 font-bold bg-gray-100">Aciliyet Durumu</td>
                                     <td className="border border-black p-3 uppercase font-bold">{selectedRequest.urgency}</td>
                                 </tr>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100">Kullanılacak Mahal</td>
+                                    <td className="border border-black p-3">{selectedRequest.location}</td>
+                                </tr>
+                                <tr>
+                                    <td className="border border-black p-3 font-bold bg-gray-100">Açıklama</td>
+                                    <td className="border border-black p-3">{selectedRequest.description}</td>
+                                </tr>
                             </tbody>
                         </table>
 

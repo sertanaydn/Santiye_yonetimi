@@ -19,6 +19,8 @@ export async function POST(request: Request) {
                     quantity: Number(quantity), // Ensure number
                     unit: unit || 'Adet',
                     urgency,
+                    location: body.location || '',
+                    description: body.description || '',
                     status: 'Bekliyor'
                 }
             ])
@@ -35,6 +37,8 @@ export async function POST(request: Request) {
                 'MALZEME': item_name,
                 'MİKTAR': `${quantity} ${unit}`, // Combine for sheet
                 'ACİLİYET': urgency,
+                'MAHAL': body.location || '',
+                'AÇIKLAMA': body.description || '',
                 'DURUM': 'Bekliyor'
             });
         } catch (sheetError) {
