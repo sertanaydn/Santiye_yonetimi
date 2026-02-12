@@ -230,17 +230,7 @@ export default function PurchaseRequestListPage() {
                                         <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Miktar</td>
                                         <td className="p-4 text-xl font-bold text-neutral-900">{selectedRequest.quantity} <span className="text-base font-normal text-neutral-600">{selectedRequest.unit}</span></td>
                                     </tr>
-                                    <tr className="border-b border-neutral-300">
-                                        <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Aciliyet Durumu</td>
-                                        <td className="p-4">
-                                            <span className={`px-3 py-1 rounded border text-sm font-bold ${selectedRequest.urgency === 'Acil' || selectedRequest.urgency === 'Çok Acil'
-                                                ? 'bg-red-50 text-red-700 border-red-200'
-                                                : 'bg-neutral-100 text-neutral-900 border-neutral-200'
-                                                }`}>
-                                                {selectedRequest.urgency}
-                                            </span>
-                                        </td>
-                                    </tr>
+
                                     <tr className="border-b border-neutral-300">
                                         <td className="p-4 bg-neutral-100 font-bold text-neutral-700 border-r border-neutral-300 uppercase text-sm tracking-wide">Kullanılacak Mahal</td>
                                         <td className="p-4 text-lg">{selectedRequest.location || '-'}</td>
