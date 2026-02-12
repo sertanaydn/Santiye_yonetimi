@@ -69,7 +69,7 @@ export default function RequestPage() {
     if (lastRequest) {
         return (
             <div className="min-h-screen bg-neutral-100 p-8 flex flex-col items-center gap-6">
-                <div className="bg-green-100 text-green-800 p-4 rounded-lg text-center w-full max-w-lg">
+                <div className="bg-green-100 text-green-800 p-4 rounded-lg text-center w-full max-w-lg print:hidden">
                     ✅ Talep Başarıyla Kaydedildi!
                 </div>
 
